@@ -1,0 +1,1 @@
+const collegeModels=require('../Models/collegeModel')
