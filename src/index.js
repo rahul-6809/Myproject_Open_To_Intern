@@ -6,7 +6,7 @@ const route=require("./Routers/routes")
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 
-mongoose.connect('mongodb://localhost',{useNewUrlParser:true})
+mongoose.connect('mongodb+srv://rkpandeyisin2015:B54DrIXCMjAsvffT@cluster1.3i5fv9s.mongodb.net/Open_to_intern',{useNewUrlParser:true})
   .then(()=>{console.log('MongoDb is connected...')})
   .catch((err)=>{console.log(err.message);})
 

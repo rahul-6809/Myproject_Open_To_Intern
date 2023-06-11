@@ -16,10 +16,12 @@ const internSchema = new mongoose.Schema(
         mobile: {
             type: String,
             required: true,
+            unique: true
         },
         collegeId: {
             type: ObjectId,
             ref: "college",
+            required: true
         },
         email: {
             type: String,
