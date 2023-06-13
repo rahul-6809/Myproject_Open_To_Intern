@@ -59,7 +59,7 @@ const createInten = async (req, res) => {
 
    return res.status(201).send({status : true, data : resInter})
 
-}catch(err){console.log(err), res.status(500).send({status :false , message: err.message})}
+}catch(err){ res.status(500).send({status :false , message: err.message})}
 }
 
 
