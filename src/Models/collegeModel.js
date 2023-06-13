@@ -2,7 +2,7 @@
 
 const mongoose =require('mongoose')
 
-const collegeSchema=new mongoose.SchemaType({
+const collegeSchema=new mongoose.Schema({
 
     
     name: {
