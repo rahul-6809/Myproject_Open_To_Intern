@@ -22,9 +22,9 @@ const createInten= async (req,res) =>{
                  if(findInternMobile) return res.status(400).send({status:false,message:"Intern already exists"})
                  else{
 
-                    const internData = {name: name, email: email,mobile: mobile,collegeId: findCollege._id}
+                    const internData = {name: name, emailId: emailId, mobile: mobile, collegeId: findCollege._id}
                    const intern= await internModels.create(internData)
-                    const InternResponse = {name: intern.name,   mobile: intern.mobile,    collegeid: intern.collegeId,emailId: intern.emailId,  isDelete: intern.isDelete}
+                    const InternResponse = {name: intern.name,   mobile: intern.mobile,    collegeid: intern.collegeId, emailId: intern.emailId,  isDeleted: intern.isDeleted}
                     res.status(201).send({status:true,data:InternResponse})
                  }
                 }
@@ -49,7 +49,7 @@ const GetIntenDetails= async (req, res) =>{
             if(! College) return res.status(400).send({status:false, message:" College is not found"})
             else{
                 const intern=await internModels.find({collegeId: College._id}.select({name:1,emailId:1,mobile:1}))
-                const collegeDetails = {name:College.name,fullName:College.fullName,logolink: College.logolink,Interns:intern}
+                const collegeDetails = {name:College.name, fullName:College.fullName, logoLink: College.logoLink, Interns:intern}
                 res.status(200).send({status:true,data:collegeDetails})
             }
         }
