@@ -1,64 +1,90 @@
-const collegeModels= require('../Models/collegeModel')
-const internModels=require('../Models/internModel')
-const validator = require('validator');
+const collegeModel = require('../Models/collegeModel')
+const internModel = require("../Models/internModel");
+const validator = require('validator')
 
-const createInten= async (req,res) =>{
-    try{
-        const {name,mobile,collegeName,emailId}=req.body
-        if(!name) return res.status(400).send({status:false,message:"Name is required"})    
-        if(!mobile) return res.status(400).send({status:false,message:"Mobile is required"})    
-        if(!collegeName) return res.status(400).send({status:false,message:"collegeName is required"})    
-        if(!emailId) return res.status(400).send({status:false,message:"EmailId is required"})    
-        if(!validator.isMobilePhone(mobile)) return res.status(400).send({status:false,message:"Invalid Mobile Number"})
-        if(!validator.isEmail(emailId)) return res.status(400).send({status:false,message:"Invalid email"})
-        else{
-            const college = await collegeModels.findOne({name:collegeName})
-            if(!college) return res.status(404).send({status:false,message:"college not found"})
-            else{
-                const intern = await internModels.findOne({emailId: emailId})
-                if(intern) return res.status(400).send({status:false,message:"Intern already exists"})
-                else{
-                 const findInternMobile = await internModels.findOne({mobile: mobile})
-                 if(findInternMobile) return res.status(400).send({status:false,message:"Intern already exists"})
-                 else{
 
-                    
-          const newIntern = await internModels.create({name, emailId, mobile, collegeId : college._id}) 
 
-              const sendInter = await internModels.findById(newIntern._id).select({_id:0,__v:0})
+const isValid = function(value){
+    if(typeof value === "undefined"|| value === null) return false
+    if(typeof value === "string" && value.trim().length === 0) return false
+    return true
+  }  
+  
 
-            return res.status(201).send({status : true, data : sendInter})
-                    
-                 }
-                }
-            }
-        }
 
-    }catch(err){
-        res.status(500).send({status:false, message:err.message});
-    }
+const createInten = async (req, res) => {
+  try{let { name, email, mobile, collegeName } = req.body;
+
+  if (!isValid(name) ||!isValid(email) ||!isValid(mobile) ||!isValid(collegeName)) {
+    return res.status(400).send({ status: false, message: "Invalid input" });
+  }
+
+  
+  
+  if (!validator.isEmail(email)) {
+    return res.status(400).send({ status: false, message: "Email should be valid email address" });
+  }
+ 
+  const intern = await internModel.findOne({ email });
+
+  if (intern) {
+    return res.status(400).send({ status: false, message: "email already exists" });
+  }
+
+ 
+ 
+
+
+  if (!validator.isMobilePhone(mobile)) {
+    return res.status(400).send({ status: false, message: "provide correct Mobile number" });
+  }
+
+  const internExists = await internModel.findOne({ mobile });
+
+  if (internExists) {
+    return res.status(400).send({status: false,message: "Mobile Number already present",
+      });
+  }
+  collegeName = collegeName.trim();
+  const college = await collegeModel.findOne({ name: collegeName });
+
+  if (!college) {
+ return   res.status(404).send({status: false,message: " college doesn't exists",
+      });
+  }
+
+    const addIntern = await internModel.create({name, email, mobile, collegeId : college._id}) 
+
+    const resInter = await internModel.findById(addIntern._id).select({_id:0})
+
+   return res.status(201).send({status : true, data : resInter})
+
+}catch(err){console.log(err), res.status(500).send({status :false , message: err.message})}
 }
 
 
 
 
-const GetIntenDetails= async (req, res) =>{
-    try{
-        const college_Name = req.params.collegeName
 
-        if(!college_Name) return res.status(400).send({status:false, message:"collegeName is required"})
-        else{
-            const College= await collegeModels.findOne({name:college_Name})
-            if(! College) return res.status(400).send({status:false, message:" College is not found"})
-            else{
-                const intern=await internModels.find({collegeId: College._id}.select({name:1,emailId:1,mobile:1}))
-                const collegeDetails = {name:College.name, fullName:College.fullName, logoLink: College.logoLink, Interns:intern}
-                res.status(200).send({status:true,data:collegeDetails})
-            }
-        }
+const GetIntenDetails = async (req,res)=>{
+try{
+  let college_name = req.query.collegeName
+   if(!college_name) return res.status(404).send({status : false, message:"collegeName is required"})
 
-    }catch(err){ res.status(500).send({status:false, message:err.message}); }
+const college = await collegeModel.findOne({name : college_name}).lean()
+if(!college)  return res.status(404).send({status:false, message:'college not found'})
+
+const intern = await internModel.find({collegeId:college._id}).select({collegeId:0, isDeleted:0,__v:0})
+delete college._id
+delete college.isDeleted
+delete college.__v
+college.interns = intern
+
+res.status(200).send({status:true, data :college})
+}catch(err){
+  console.log(err) , res.status(500).send({status:false, message:err.message})
+}
 }
 
 
-module.exports = { createInten, GetIntenDetails }    
+module.exports = {createInten,GetIntenDetails}
