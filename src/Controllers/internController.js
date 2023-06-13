@@ -10,22 +10,25 @@ const createInten= async (req,res) =>{
         if(!collegeName) return res.status(400).send({status:false,message:"collegeName is required"})    
         if(!emailId) return res.status(400).send({status:false,message:"EmailId is required"})    
         if(!validator.isMobilePhone(mobile)) return res.status(400).send({status:false,message:"Invalid Mobile Number"})
-        if(!validator.isemail(emailId)) return res.status(400).send({status:false,message:"Invalid email"})
+        if(!validator.isEmail(emailId)) return res.status(400).send({status:false,message:"Invalid email"})
         else{
-            const findCollegeName = await collegeModels.findOne({name:collegeName})
-            if(!findCollegeName) return res.status(400).send({status:false,message:"college not found"})
+            const college = await collegeModels.findOne({name:collegeName})
+            if(!college) return res.status(404).send({status:false,message:"college not found"})
             else{
-                const findInternEmail = await internModels.findOne({emailId: emailId})
-                if(findInternEmail) return res.status(400).send({status:false,message:"Intern already exists"})
+                const intern = await internModels.findOne({emailId: emailId})
+                if(intern) return res.status(400).send({status:false,message:"Intern already exists"})
                 else{
                  const findInternMobile = await internModels.findOne({mobile: mobile})
                  if(findInternMobile) return res.status(400).send({status:false,message:"Intern already exists"})
                  else{
 
-                    const internData = {name: name, emailId: emailId, mobile: mobile, collegeId: findCollege._id}
-                   const intern= await internModels.create(internData)
-                    const InternResponse = {name: intern.name,   mobile: intern.mobile,    collegeid: intern.collegeId, emailId: intern.emailId,  isDeleted: intern.isDeleted}
-                    res.status(201).send({status:true,data:InternResponse})
+                    
+          const newIntern = await internModels.create({name, emailId, mobile, collegeId : college._id}) 
+
+              const sendInter = await internModels.findById(newIntern._id).select({_id:0,__v:0})
+
+            return res.status(201).send({status : true, data : sendInter})
+                    
                  }
                 }
             }
