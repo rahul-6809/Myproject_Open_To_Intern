@@ -4,7 +4,7 @@
 
 
 const mongoose=require('mongoose');
-const ObjectId=mongoose.Schema.typeo.ObjectId
+const ObjectId=mongoose.Schema.Types.ObjectId
 
 
 const internSchema = new mongoose.Schema(
