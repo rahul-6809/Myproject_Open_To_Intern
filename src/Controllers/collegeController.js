@@ -4,18 +4,18 @@ const validate=require('validator')
 const createCollege= async (req,res) => {
     try{
 
-        const {name,fullname,logolink} =req.body
+        const {name,fullName,logoLink} =req.body
 
-        if(!fullname) return res.status(400).send({status:false,message:"Fullname is required"})
+        if(!fullName) return res.status(400).send({status:false,message:"Fullname is required"})
         if(!name) return res.status(400).send({status:false,message:"Name is required"})
-        if(!logolink|| logoLink.trim() == '' || !validator.isURL(logoLink)) return res.status(400).send({status:false,message:"Logolink is required"})
+        if(!logoLink|| logoLink.trim() == '' || !validator.isURL(logoLink)) return res.status(400).send({status:false,message:"Logolink is required"})
         
         else{ 
         const findCollege = await collegeModel.findOne({ name: name });
         if (findCollege) return res.status(400).json({ status: false, message: 'College already exists' });
 
         const College=await collegeModels.create(req.body)
-        const response= {name:College.name, fullname:College.fullname, logolink:College.logolink, isDelete:College.isDelete}
+        const response= {name:College.name, fullName:College.fullName, logoLink:College.logoLink, isDeleted:College.isDeleted}
         req.status(201).send({status:true, data:response})
     }
 }
