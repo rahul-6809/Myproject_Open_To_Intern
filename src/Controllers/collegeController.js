@@ -1,5 +1,5 @@
 const collegeModels=require('../Models/collegeModel')
-const validate=require('validator')
+const validator=require('validator')
 
 const createCollege= async (req,res) => {
     try{
