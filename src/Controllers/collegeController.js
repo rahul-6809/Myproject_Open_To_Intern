@@ -11,7 +11,7 @@ const createCollege= async (req,res) => {
         if(!logoLink|| logoLink.trim() == '' || !validator.isURL(logoLink)) return res.status(400).send({status:false,message:"Logolink is required"})
         
         else{ 
-        const findCollege = await collegeModel.findOne({ name: name });
+        const findCollege = await collegeModels.findOne({ name: name });
         if (findCollege) return res.status(400).json({ status: false, message: 'College already exists' });
 
         const College=await collegeModels.create(req.body)
