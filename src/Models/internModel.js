@@ -23,7 +23,7 @@ const internSchema = new mongoose.Schema(
             ref: "college",
             required: true
         },
-        email: {
+        emailId: {
             type: String,
             required: true,
             unique: true
