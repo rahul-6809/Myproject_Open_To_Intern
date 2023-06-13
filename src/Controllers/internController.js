@@ -1,6 +1,6 @@
 const collegeModels= require('../Models/collegeModel')
 const internModels=require('../Models/internModel')
-const validate = require('validator');
+const validator = require('validator');
 
 const createInten= async (req,res) =>{
     try{
@@ -9,8 +9,8 @@ const createInten= async (req,res) =>{
         if(!mobile) return res.status(400).send({status:false,message:"Mobile is required"})    
         if(!collegeName) return res.status(400).send({status:false,message:"collegeName is required"})    
         if(!emailId) return res.status(400).send({status:false,message:"EmailId is required"})    
-        if(!validate.isMobilePhone(mobile)) return res.status(400).send({status:false,message:"Invalid Mobile Number"})
-        if(!validate.isemail(emailId)) return res.status(400).send({status:false,message:"Invalid email"})
+        if(!validator.isMobilePhone(mobile)) return res.status(400).send({status:false,message:"Invalid Mobile Number"})
+        if(!validator.isemail(emailId)) return res.status(400).send({status:false,message:"Invalid email"})
         else{
             const findCollegeName = await collegeModels.findOne({name:collegeName})
             if(!findCollegeName) return res.status(400).send({status:false,message:"college not found"})
